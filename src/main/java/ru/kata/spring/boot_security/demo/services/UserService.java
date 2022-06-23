@@ -13,11 +13,9 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
     }
 
 
@@ -31,8 +29,6 @@ public class UserService {
     }
 
     public void saveUser(User user) {
-//        User userFromDB = userRepository.findByName(user.getName());
-
         userRepository.save(user);
     }
 

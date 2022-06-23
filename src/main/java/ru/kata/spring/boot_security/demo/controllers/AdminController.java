@@ -3,17 +3,24 @@ package ru.kata.spring.boot_security.demo.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
+import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
     private final UserService userService;
+    private final RoleService roleService;
 
-    public AdminController(UserService userService) {
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping()
@@ -26,12 +33,16 @@ public class AdminController {
         return "/admin/create";
     }
     @PostMapping()
-    public String createUser(User user) {
+    public String createUser(@ModelAttribute("user") User user) {
+        List<String> roleNames = user.getRoles().stream().map(role -> role.getName()).collect(Collectors.toList());
+        List<Role> roles = roleService.getRolesByNameIn(roleNames);
+        user.setRoles(roles);
         userService.saveUser(user);
         return "redirect:/admin";
     }
     @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
+        userService.findByID(id).getRoles().clear();
         userService.deleteByID(id);
         return "redirect:/admin";
     }
@@ -42,6 +53,9 @@ public class AdminController {
     }
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("user") User user, @PathVariable("id") Long id) {
+        List<String> roleNames = user.getRoles().stream().map(role -> role.getName()).collect(Collectors.toList());
+        List<Role> roles = roleService.getRolesByNameIn(roleNames);
+        user.setRoles(roles);
         userService.saveUser(user);
         return "redirect:/admin";
     }
