@@ -9,6 +9,9 @@ import java.util.Collection;
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
 
+    public static final int ROLE_ADMIN = 1;
+    public static final int ROLE_USER = 2;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

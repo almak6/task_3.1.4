@@ -15,7 +15,13 @@ public class RoleService {
         this.roleRepository = roleRepository;
     }
 
-    public List<Role> getRolesByNameIn(List<String> name) {
-        return roleRepository.getRolesByNameIn(name);
+    public Role getAdminRole() {
+        return roleRepository.findByNameIgnoreCase("ROLE_ADMIN")
+                .orElseGet(() -> roleRepository.save(new Role("ROLE_ADMIN")));
+    }
+
+    public Role getUserRole() {
+        return roleRepository.findByNameIgnoreCase("ROLE_USER")
+                .orElseGet(() -> roleRepository.save(new Role("ROLE_USER")));
     }
 }

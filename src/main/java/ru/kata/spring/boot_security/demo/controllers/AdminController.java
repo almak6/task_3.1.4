@@ -29,14 +29,13 @@ public class AdminController {
         return "/admin/user-list";
     }
     @GetMapping("/create")
-    public String createUserForm(User user) {
+    public String createUserForm(User user, Model model) {
+        model.addAttribute("roleAdmin", roleService.getAdminRole());
+        model.addAttribute("roleUser", roleService.getUserRole());
         return "/admin/create";
     }
     @PostMapping()
     public String createUser(@ModelAttribute("user") User user) {
-        List<String> roleNames = user.getRoles().stream().map(role -> role.getName()).collect(Collectors.toList());
-        List<Role> roles = roleService.getRolesByNameIn(roleNames);
-        user.setRoles(roles);
         userService.saveUser(user);
         return "redirect:/admin";
     }
@@ -49,13 +48,12 @@ public class AdminController {
     @GetMapping("/{id}/edit")
     public String editUserForm(Model model, @PathVariable("id") Long id) {
         model.addAttribute("user", userService.findByID(id));
+        model.addAttribute("roleAdmin", roleService.getAdminRole());
+        model.addAttribute("roleUser", roleService.getUserRole());
         return "admin/edit";
     }
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("user") User user, @PathVariable("id") Long id) {
-        List<String> roleNames = user.getRoles().stream().map(role -> role.getName()).collect(Collectors.toList());
-        List<Role> roles = roleService.getRolesByNameIn(roleNames);
-        user.setRoles(roles);
         userService.saveUser(user);
         return "redirect:/admin";
     }

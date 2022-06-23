@@ -20,10 +20,13 @@
         <input type="text" th:field="*{email}" id="email"/>
         <br/>
         <label for="password">Password</label>
-        <input type="text" th:field="*{password}" id="password"/>
+        <input type="password" th:field="*{password}" id="password"/>
         <br/>
-        <label for="role">Role</label>
-        <input type="text" th:field="*{roles}" id="role"/>
+        <label for="roleAdmin">Roles</label>
+        <input type="checkbox" th:field="*{roles}" th:text="ADMIN" th:value="${roleAdmin.getId()}" id="roleAdmin"/>
+        <label for="roleUser"></label>
+        <input type="checkbox" th:field="*{roles}" th:text="USER" th:value="${roleUser.getId()}" id="roleUser"/>
+<!--        <p th:text="${user.getRoles()}"></p>-->
         <input type="submit" value="Update user"/>
     </div>
 </form>
