@@ -3,14 +3,10 @@ package ru.kata.spring.boot_security.demo.models;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 @Entity
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
-
-    public static final int ROLE_ADMIN = 1;
-    public static final int ROLE_USER = 2;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,9 +14,6 @@ public class Role implements GrantedAuthority {
 
     @Column(name = "name")
     private String name;
-
-    @ManyToMany(mappedBy = "roles")
-    private Collection<User> users;
 
     public Role() {
     }
@@ -53,14 +46,6 @@ public class Role implements GrantedAuthority {
         this.name = name;
     }
 
-    public Collection<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Collection<User> users) {
-        this.users = users;
-    }
-
     @Override
     public String getAuthority() {
         return name;
@@ -68,6 +53,6 @@ public class Role implements GrantedAuthority {
 
     @Override
     public String toString() {
-        return name;
+        return name.substring(5);
     }
 }

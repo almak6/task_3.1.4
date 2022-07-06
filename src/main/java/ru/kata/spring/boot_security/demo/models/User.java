@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.models;
 
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -20,6 +21,7 @@ public class User implements UserDetails {
     private String name;
     @Column(name = "last_name")
     private String lastName;
+
     @Column(name = "age")
     private byte age;
     @Column(name = "email")
