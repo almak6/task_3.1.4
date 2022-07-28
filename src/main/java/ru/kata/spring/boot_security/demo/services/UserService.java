@@ -10,7 +10,7 @@ public interface UserService {
 
     User findByID(Long id);
 
-    void saveUser(User user);
+    User saveUser(User user);
 
     void deleteByID(Long id);
 

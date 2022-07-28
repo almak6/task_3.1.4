@@ -1,16 +1,16 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.services.RoleServiceImpl;
 import ru.kata.spring.boot_security.demo.services.UserServiceImpl;
 
-import java.security.Principal;
+import java.util.List;
 
-@Controller
-@RequestMapping("/admin")
+@RestController
+@RequestMapping("/admin/users")
 public class AdminController {
 
     private final UserServiceImpl userServiceImpl;
@@ -22,28 +22,30 @@ public class AdminController {
     }
 
     @GetMapping()
-    public String index(Model model, Principal principal, User user) {
-        User user2 = userServiceImpl.findByName(principal.getName());
-        model.addAttribute("user2", user2);
-        model.addAttribute("user", user);
-        model.addAttribute("users", userServiceImpl.findAll());
-        model.addAttribute("roleAdmin", roleServiceImpl.getAdminRole());
-        model.addAttribute("roleUser", roleServiceImpl.getUserRole());
-        return "/admin/user-list";
+    public ResponseEntity<List<User>> getUsers() {
+        return new ResponseEntity<>(userServiceImpl.findAll(), HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(userServiceImpl.findByID(id), HttpStatus.OK);
+    }
+
     @PostMapping()
-    public String createUser(User user) {
-        userServiceImpl.saveUser(user);
-        return "redirect:/admin";
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        user.setRoles(roleServiceImpl.findAllUserRoles(user));
+        User userCreated = userServiceImpl.saveUser(user);
+        return new ResponseEntity<>(userCreated, HttpStatus.OK);
     }
-    @DeleteMapping("/delete")
-    public String deleteUser(@ModelAttribute("user") User user) {
-        userServiceImpl.deleteByID(user.getId());
-        return "redirect:/admin";
-    }
-    @PatchMapping("/edit")
-    public String update(@ModelAttribute("user") User user) {
+
+    @PatchMapping("/{id}")
+    public void update(@RequestBody User user) {
+        user.setRoles(roleServiceImpl.findAllUserRoles(user));
         userServiceImpl.saveUser(user);
-        return "redirect:/admin";
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable("id") Long id) {
+        userServiceImpl.deleteByID(id);
     }
 }

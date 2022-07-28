@@ -2,7 +2,11 @@ package ru.kata.spring.boot_security.demo.services;
 
 import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.models.Role;
+import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
+
+import java.util.Collection;
+import java.util.HashSet;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -11,6 +15,16 @@ public class RoleServiceImpl implements RoleService {
 
     public RoleServiceImpl(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
+    }
+
+    public Collection<Role> findAllUserRoles(User user) {
+        Collection<Role> roles = new HashSet<>();
+        user.getRoles().stream().forEach(r -> roles.add(findRoleByName(r.getName())));
+        return roles;
+    }
+
+    public Role findRoleByName(String name) {
+        return roleRepository.findRoleByName(name);
     }
 
     public Role getAdminRole() {
